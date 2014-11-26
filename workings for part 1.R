@@ -2,7 +2,7 @@
 
 getwd()
 
-setwd("C:/Users/aurquhart/Documents/Github/R_Programming_Assignment3")
+setwd("C:/Users/angus/Documents/Github/R_Programming_Assignment3")
 
 
 
@@ -18,7 +18,7 @@ unzip("data.zip", exdir = "data")
 list.files("data")
 
 #re-adjust working directory
-setwd("C:/Users/aurquhart/Documents/Github/R_Programming_Assignment3/data")
+setwd("C:/Users/angus/Documents/Github/R_Programming_Assignment3/data")
 
 #read in csv file
 outcome <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
@@ -64,7 +64,51 @@ class(singledf)
 singledf[which(singledf$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack == 
                  min(singledf$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack,na.rm = TRUE)), ]
 
-min(singledf$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack,na.rm = TRUE)
-?min
+
 
 #So now need to automate this process and also create error checks
+
+
+
+best <- function(state,outcome ) {
+  #read in data
+  df <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
+  
+  #Create a dataframe with relevant columns
+  bestdf <- df[,c("State","Hospital.Name","Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack",  
+                       "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure",
+                       "Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia" )]
+  singledf <- bestdf[ which(bestdf$State== state), ]
+  #head(singledf)
+  singlemetric <- singledf[,c("Hospital.Name",outcome)]
+  answer <-singlemetric[which(singlemetric[outcome] == 
+                            min(singlemetric[[outcome]],na.rm = TRUE)), ]
+  answer$Hospital.Name
+}
+
+state <- "AL"
+outcome <- "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack"
+singlemetric[outcome]
+min(singlemetric[[outcome]],na.rm = TRUE)
+
+best("AL","Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack")
+
+head(outcome)
+
+outcome <- "heart attack"
+outcome <- "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack"
+
+if (2+1 == 4) {5
+}else {3}
+
+if(outcome == "heart attack") {outcomeanswer <- 
+                                 "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack"
+}else if (outcome == "pneumonia") {outcomeanswer <- 
+                                     "Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia"
+} else if (outcome == "heart failure") {outcomeanswer <- 
+                                        "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure"
+} else (outcome == "invalid state")
+
+
+
+answer
