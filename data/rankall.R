@@ -1,4 +1,4 @@
-rankhospital <- function(state,outcome, num = "best" ) {
+rankall <- function(outcome, num = "best" ) {
   #read in data
   df <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
   
@@ -8,9 +8,6 @@ rankhospital <- function(state,outcome, num = "best" ) {
                   "Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia" )]
   
   
-  #Check that state in function exists in data
-  DoesStateExist<-subset(bestdf$State, bestdf$State==state)
-  if(length(DoesStateExist) == 0) stop("invalid state")
   
   
   #Fix outcome so it's the same as what the user inputs
@@ -29,8 +26,10 @@ rankhospital <- function(state,outcome, num = "best" ) {
   } else if (num == "worst") {numanswer <-1
   } else {numanswer <- num}
   
+  
+  
   #filter on state
-  singledf <- bestdf[ which(bestdf$State== state), ]
+ # singledf <- bestdf[ which(bestdf$State== state), ]
   #head(singledf)
   
   #It might be that the user asks for more records than are available
@@ -39,11 +38,11 @@ rankhospital <- function(state,outcome, num = "best" ) {
   
   
   #convert answer to be numeric
-  singledf[, 3:5] <- sapply(singledf[, 3:5], as.numeric)
+ bestdf[, 3:5] <- sapply(bestdf[, 3:5], as.numeric)
   
   #head(bestdfrank)
 
-  singlemetric <- singledf[,c("Hospital.Name","State",outcomeanswer)]
+  singlemetric <- bestdf[,c("Hospital.Name","State",outcomeanswer)]
   #head(singlemetric)
   
   #add a rank by metric and group by state
@@ -60,12 +59,19 @@ rankhospital <- function(state,outcome, num = "best" ) {
     
 
   #head(bestdfrank)
-
-  answer <- bestdfrank[ which(bestdfrank$State.rank==numanswer), ]
   
-  if (nrow(singledf) < sapply(numanswer, as.numeric)) {NA
-  } else   {answer$Hospital.Name
-  }
+  #bring back the hospitals who correspond to the rank
+  answer <- bestdfrank[ which(bestdfrank$State.rank==numanswer), ]
+ 
+  #need to tidy up header names
+  names(answer)[names(answer)=="Hospital.Name"] <- "hospital"
+  names(answer)[names(answer)=="State"] <- "state"
+ 
+  answer[,c("hospital","state")]
+ 
+  #if (nrow(singledf) < sapply(numanswer, as.numeric)) {NA
+  #} else   {answer$Hospital.Name
+  #}
 
 }
 
@@ -73,7 +79,7 @@ rankhospital <- function(state,outcome, num = "best" ) {
 #state <- "WA"
 
 #outcome <- "pneumonia"
-#num <- "1000"
+#num <- "10"
 #rankhospital("NC", "heart attack", "worst")
 
 #head(bestdf)
@@ -84,4 +90,7 @@ rankhospital <- function(state,outcome, num = "best" ) {
 
 #rankhospital("WA", "pneumonia", 1000)
 
+#rankall("pneumonia", "worst")
+#rankall("heart attack", 4)
+#rankall("heart failure", 10)
 
